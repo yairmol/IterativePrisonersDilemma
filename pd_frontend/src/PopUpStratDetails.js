@@ -2,6 +2,10 @@ import CanvasJSReact from './canvasjs/canvasjs.react';
 import styles from './PopUp.module.css';
 import {getStratGames} from './getInfo';
 import PopUpGameDetails from './PopUpGameDetails'
+import {
+    BarChart, Bar, Cell, CartesianGrid, Tooltip, Legend,
+} from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
 
 var React = require('react');
 var Component = React.Component;
@@ -52,40 +56,22 @@ getData = (x, label) => {
 }
 
 getMiniChart = (label, game) => {
-  const options = {
-    exportEnabled: false,
-  animationEnabled: true,
-  title:{
-  },
-  // subtitles: [{
-  // 	text: "Click Legend to Hide or Unhide Data Series"
-  // }], 
-  axisX: {
-  },
-  axisY: {
-      titleFontColor: "#4F81BC",
-      lineColor: "#4F81BC",
-      labelFontColor: "#4F81BC",
-      tickColor: "#4F81BC"
-  },
-  // toolTip: {
-  // 	shared: true
-  // },
-  height: 100,
-  data: [
-  {
-      type: "column",
-      name: "Clutch",
-      axisYType: "secondary",
-      showInLegend: false,
-      yValueFormatString: "#,##0.# Units",
-      dataPoints: this.getData(game, label)
-  }]
-}
-
 return (
 <div onClick={() => this.showGameDetails(game.index)} className={this.getStyle(game, label)}>
-  <CanvasJSChart options = {options}/>
+    <BarChart
+        width={500}
+        height={500}
+        data={this.getData(game, label)}
+        margin={{
+            top: 5, right: 30, left: 20, bottom: 5,
+        }}
+    >
+        <XAxis dataKey="label" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="y" fill="#82ca9d" />
+    </BarChart>
 </div>
 );
 }
