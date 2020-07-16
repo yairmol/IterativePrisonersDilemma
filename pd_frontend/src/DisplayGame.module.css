@@ -1,0 +1,57 @@
+.winnerMove {
+    flex: 1;
+    padding: 1em;
+    background-color: #fefefe;
+    margin: 2% 5%; /* 15% from the top and centered */
+    border: 1px solid #6f6cde;
+    width: 15%; /* Could be more or less, depending on screen size */
+    text-align: center;
+  }
+
+.loserMove {
+    flex: 1;
+    padding: 1em;
+    background-color: #fefefe;
+    margin: 2% 5%; /* 15% from the top and centered */
+    border: 1px solid #DE7171;
+    width: 15%; /* Could be more or less, depending on screen size */
+    text-align: center;
+}
+
+.neutralMove {
+    flex: 1;
+    padding: 1em;
+    background-color: #fefefe;
+    margin: 2% 5%; /* 15% from the top and centered */
+    border: 1px solid lightgrey;
+    width: 15%; /* Could be more or less, depending on screen size */
+    text-align: center;
+}
+
+.round {
+    display: flex; /* equal height of the children */
+}
+
+.winnerText {
+    color: #6f6cde;
+    font-family: Arial;
+    font-size: medium;
+    text-align: center;
+}
+
+.loserText {
+    color: #DE7171;
+    font-family: Arial;
+    font-size: medium;
+    text-align: center;
+}
+
+.match {
+    max-height: 600px;
+    overflow: scroll;
+}
+
+.titles {
+    display: flex; /* equal height of the children */
+    width: 97%;
+}

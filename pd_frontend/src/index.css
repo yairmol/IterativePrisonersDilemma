@@ -1,0 +1,44 @@
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+.game-config {
+  alignment: center;
+  width: max-content;
+  height: max-content;
+}
+
+.select {
+  margin-right: 10px;
+  min-width: 150px;
+  max-height: 40px;
+}
+
+.text {
+  max-height: 40px;
+}
+
+.container {
+  float: left;
+  padding: 20px;
+}
+
+.strategy {
+  padding: 10px;
+  min-width: max-content;
+}
+
+.button {
+  background-color: #123456;
+  color: #123456;
+  margin-right: 100px;
+}
+
+.submit-button {
+  margin-left: 70%;
+}

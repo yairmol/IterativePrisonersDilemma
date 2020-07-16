@@ -1,0 +1,4 @@
+flask
+flask-jsonpify
+flask-restful
+flask_cors
