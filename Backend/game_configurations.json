@@ -1,0 +1,6 @@
+{
+  "rounds": 200,
+  "d_c_score": [5,0],
+  "d_d_score": [1,1],
+  "c_c_score": [3,3]
+}

@@ -38,7 +38,7 @@ function StrategyConfig(props) {
             <TextField className={classes.text}
                        label="Strategy"
                        select
-                       value={props.selectedStrategy}
+                       value={props.name}
                        onChange={props.onStrategyChange}>
 
                 {props.strategies.map((option) => {
@@ -49,7 +49,7 @@ function StrategyConfig(props) {
 
             </TextField>
             <TextField
-                value={0}
+                value={props.selectedStrategy.quantity}
                 className={classes.text}
                 onChange={props.onQuantityChange}
                 label="Quantity"
@@ -58,7 +58,7 @@ function StrategyConfig(props) {
     )
 }
 
-export default function GameConfig() {
+export default function GameConfig(props) {
     const [selectedStrategies, setSelectedStrategies] = useState([{name: "", quantity: 0}]);
     const [strategies, setStrategies] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -79,18 +79,22 @@ export default function GameConfig() {
         axios.post('http://localhost:8080/match',{
             strategies: selectedStrategies
         })
-            .then(res => alert("success: " + res))
-            .catch(err => alert("an error occured: " + err))
+            .then(res => {
+                props.updateData(res.data);
+            })
+            .catch(err => alert(err))
     };
 
     const onSelectionChanged = (event, i) => {
-        selectedStrategies[i].name = event.target.value;
-        setSelectedStrategies(selectedStrategies);
+        const array = selectedStrategies.slice(0);
+        array[i].name = event.target.value;
+        setSelectedStrategies(array);
     };
 
     const onQuantityChanged = (event, i) => {
-        selectedStrategies[i].quantity = event.target.value;
-        setSelectedStrategies(selectedStrategies);
+        const array = selectedStrategies.slice(0);
+        array[i].quantity = event.target.value;
+        setSelectedStrategies(array);
     };
 
     const addStrategy = () => {
@@ -122,7 +126,8 @@ export default function GameConfig() {
                                 <StrategyConfig strategies={strategies}
                                                 onQuantityChange={(event => onQuantityChanged(event, i))}
                                                 onStrategyChange={(event) => onSelectionChanged(event, i)}
-                                                selectedStrategy={selectedStrategies[i].name}
+                                                selectedStrategy={selectedStrategies[i]}
+                                                name={selectedStrategies[i].name}
                                 />
                                 </Grid>
                             )
@@ -142,7 +147,7 @@ export default function GameConfig() {
                         onClick={onSubmit}
                         color="primary"
                         className={classes.button}
-                        variant="outlined">
+                        variant="contained">
                         Make Match
                     </Button>
                 </form>

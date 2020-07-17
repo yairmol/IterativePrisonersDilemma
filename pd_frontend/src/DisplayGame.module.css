@@ -47,11 +47,14 @@
 }
 
 .match {
-    max-height: 600px;
     overflow: scroll;
 }
 
 .titles {
     display: flex; /* equal height of the children */
     width: 97%;
+}
+
+.tile {
+    height: max-content;
 }

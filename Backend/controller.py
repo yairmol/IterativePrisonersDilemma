@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_jsonpify import jsonify
 from game import Match
 from flask_cors import CORS
+from strategies import strat_dict
 
 app = Flask(__name__)
 CORS(app)
@@ -17,15 +18,25 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/match', methods=['POST'])
 def make_match():
     data = request.json
-    print(type(data['strategies']))
     match = Match(data['strategies'])
     match.run()
-    return jsonify({"scores": match.get_results()})
+    Match.last_match = match
+    return jsonify(
+        {
+            "scores": match.get_results(),
+            "games": match.get_games()
+        })
 
 
 @app.route('/strategies')
 def get_strategies():
-    return jsonify({"message": ["tit-for-tat", "grunger"]})
+    return jsonify({"message": list(strat_dict.keys())})
+
+
+@app.route('/gamesof/<strategy>')
+def games_of(strategy):
+    games = Match.last_match.games_of(strategy)
+    return jsonify(games)
 
 
 # @app.after_request

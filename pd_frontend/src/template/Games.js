@@ -9,17 +9,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
 import TableContainer from "@material-ui/core/TableContainer";
 
-// Generate Order Data
-function createData(p1, p2, p1_score, p2_score) {
-    return { p1, p2, p1_score, p2_score };
-}
-
-const rows = [
-    createData('tit-for-tat', 'tit-for-tat', 30,30),
-    createData('tit-for-tat', 'grunger', 30,30),
-    createData('grunger', 'tit-for-tat', 30,30),
-    createData('tit-for-tat', 'defector', 0,50),
-];
 
 function preventDefault(event) {
     event.preventDefault();
@@ -34,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Games() {
+export default function Games(props) {
     const classes = useStyles();
     return (
         <React.Fragment>
@@ -46,16 +35,16 @@ export default function Games() {
                         <TableCell>Player 1</TableCell>
                         <TableCell>Player 2</TableCell>
                         <TableCell>Player 1 score</TableCell>
-                        <TableCell align="right">Player 2 score</TableCell>
+                        <TableCell>Player 2 score</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
+                    {props.games.map((row) => (
                         <TableRow /*key={row.id}*/>
-                            <TableCell>{row.p1}</TableCell>
-                            <TableCell>{row.p2}</TableCell>
-                            <TableCell>{row.p1_score}</TableCell>
-                            <TableCell>{row.p2_score}</TableCell>
+                            <TableCell>{row.player1name}</TableCell>
+                            <TableCell>{row.player2name}</TableCell>
+                            <TableCell>{row.player1score}</TableCell>
+                            <TableCell>{row.player2score}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

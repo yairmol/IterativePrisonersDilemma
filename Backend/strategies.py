@@ -1,12 +1,18 @@
 from move import Move
 
 
+# class Aviv:
+#     def __init__(self):
+#         self.toDefect = False
+#
+#     def next_move(self):
+#
+
+
 def find_strategy(strategy):
     """return a strategy given the strategy name"""
     strategy_factory = strat_dict[strategy]
-    print("type of strategy factory", type(strategy_factory))
     strategy_object = strategy_factory()
-    print("type of strategy object", type(strategy_object))
     return strategy_object
 
 

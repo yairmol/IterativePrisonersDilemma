@@ -1,37 +1,31 @@
-import CanvasJSReact from './canvasjs/canvasjs.react';
 import styles from './PopUp.module.css';
 import {getStratGames} from './getInfo';
 import PopUpGameDetails from './PopUpGameDetails'
-import {
-    BarChart, Bar, Cell, CartesianGrid, Tooltip, Legend,
-} from 'recharts';
-import {LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer} from 'recharts';
+import {BarChart, Bar, XAxis, YAxis} from 'recharts';
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
 import Title from "./template/Title";
 
-var React = require('react');
-var Component = React.Component;
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+const React = require('react');
+const Component = React.Component;
 
 class PopUpStratDetails extends Component {
     state = {
         gameIndex: null,
         showWindow: false,
-    }
-    showGameDetails = (i) => {
+        isLoaded: false
+    };
+    showGameDetails = (game) => {
         this.setState({
-            gameIndex: i,
+            game: game,
             showWindow: true
         })
-    }
+    };
 
     closeWindow = () => {
         this.setState({
             showWindow: false
         })
-    }
+    };
 
     handleClick = () => {
         this.props.toggle();
@@ -39,29 +33,29 @@ class PopUpStratDetails extends Component {
 
 
     getStyle = (game, label) =>
-        game.name1 == label ? game.score1 > game.score2 ?
+        game.player1name === label ? game.player1score > game.player2score ?
             "#6f6cde" : "#DE7171" :
-            game.score1 < game.score2 ?
+            game.player1score < game.player2score ?
                 "#6f6cde" : "#DE7171";
 
     getData = (x, label) => {
-        var currectIsFirst = x.name1 == label
+        const currentIsFirst = x.player1name === label;
         return [
             {
-                label: currectIsFirst ? x.name1 : x.name2,
-                y: currectIsFirst ? x.score1 : x.score2
+                label: currentIsFirst ? x.player1name : x.player2name,
+                y: currentIsFirst ? x.player1score : x.player2score
             },
             {
-                label: !currectIsFirst ? x.name1 : x.name2,
-                y: !currectIsFirst ? x.score1 : x.score2
+                label: !currentIsFirst ? x.player1name : x.player2name,
+                y: !currentIsFirst ? x.player1score : x.player2score
             }
         ]
-    }
+    };
 
     getMiniChart = (label, game) => {
         return (
             <Grid item>
-                <div className={styles.grid} onClick={() => this.showGameDetails(game.index)} >
+                <div className={styles.grid} onClick={() => this.showGameDetails(game)} >
                     <BarChart
                         width={200}
                         height={200}
@@ -77,32 +71,51 @@ class PopUpStratDetails extends Component {
                 </div>
             </Grid>
         );
-    }
+    };
 
 
     render() {
-        var games = getStratGames(this.props.label);
-        var charts = games.map((x) => this.getMiniChart(this.props.label, x));
-        var label = this.props.label;
-        var score = this.props.score;
-        var gamesNum = games.length;
-        return (
-            <div>
-                <div className={styles.modal}>
-                    <div className={styles.modal_content}>
-                        <span className={styles.close} onClick={this.handleClick}>&times;    </span>
-                        <Title><b>{"Strategy: "}</b>{label},<b>{" score: "}</b>{score},<b>{" games: "}</b>{gamesNum}</Title>
-                        <hr/>
-                        <br/>
-                        <Grid container spacing={3}>
-                            {charts}
-                        </Grid>
+        if (!this.state.isLoaded) {
+            getStratGames(this.props.label)
+                .then(games => {
+                    this.setState({
+                        games: games,
+                        isLoaded: true
+                    })
+                });
+            return (
+                <div>
+                    <div className={styles.modal}>
+                        <div className={styles.modal_content}>
+                            <Title>Loading...</Title>
+                        </div>
                     </div>
-                    {this.state.showWindow ? (
-                        <PopUpGameDetails index={this.state.gameIndex} toggle={this.closeWindow}/>) : null}
                 </div>
-            </div>
-        );
+            )
+        } else {
+            const charts = this.state.games.map((x) => this.getMiniChart(this.props.label, x));
+            const label = this.props.label;
+            const score = this.props.score;
+            const gamesNum = this.state.games.length;
+            return (
+                <div>
+                    <div className={styles.modal}>
+                        <div className={styles.modal_content}>
+                            <span className={styles.close} onClick={this.handleClick}>&times;    </span>
+                            <Title><b>{"Strategy: "}</b>{label},<b>{" score: "}</b>{score},<b>{" games: "}</b>{gamesNum}
+                            </Title>
+                            <hr/>
+                            <br/>
+                            <Grid container spacing={3}>
+                                {charts}
+                            </Grid>
+                        </div>
+                        {this.state.showWindow ? (
+                            <PopUpGameDetails game={this.state.game} toggle={this.closeWindow}/>) : null}
+                    </div>
+                </div>
+            );
+        }
     }
 
 }

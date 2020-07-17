@@ -1,56 +1,48 @@
-import CanvasJSReact from './canvasjs/canvasjs.react';
-import {getScores} from './getInfo';
+import React from 'react'
 import PopUpDet from './PopUpStratDetails';
 import {construct} from './getInfo'
-import {
-    BarChart, Bar, Cell, CartesianGrid, Tooltip, Legend,
-} from 'recharts';
-import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
+import {BarChart, Bar, Tooltip, XAxis, YAxis, ResponsiveContainer} from 'recharts';
 
-
-var React = require('react');
-var Component = React.Component;
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+const Component = React.Component;
 
 
 class Chart extends Component {
     state = {
         showStratDetails: false,
-    }
-    label = null
+    };
+    label = null;
 
     closeWindow = () => {
         this.setState({
             showStratDetails: false
         })
-    }
+    };
 
     render() {
-        construct();
-
         return (
             <div>
+                <ResponsiveContainer height={300} width="95%">
                 <BarChart
-                    width={500}
-                    height={300}
-                    data={getScores()}
+
+                    data={this.props.scores}
                     margin={{
                         top: 5, right: 30, left: 20, bottom: 5,
                     }}
                     onClick={(e) => {
-                        this.label = e.activePayload[0].payload.label;
-                        this.score = e.activePayload[0].payload.y;
+                        this.label = e.activePayload[0].payload.name;
+                        this.score = e.activePayload[0].payload.score;
                         this.setState({
                             showStratDetails: true
                         })
                     }}
                 >
-                    <XAxis dataKey="label"/>
+                    <XAxis dataKey="name"/>
                     <YAxis/>
                     <Tooltip/>
-                    <Bar dataKey="y" fill="#82ca9d"/>
-                </BarChart>
+                    <Bar dataKey="score" fill="#82ca9d"/>
+                </BarChart
+>
+                </ResponsiveContainer>
                 {this.state.showStratDetails ? <PopUpDet score={this.score} label={this.label} toggle={this.closeWindow}/> : null}
                 {/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
             </div>
