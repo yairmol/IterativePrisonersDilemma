@@ -33,6 +33,7 @@ class Strategy:
 
 class GrungerStrategy:
     def __init__(self):
+        self.is_random = False
         self.name = "grunger"
         self.toAvenge = False
 
@@ -49,15 +50,19 @@ class GrungerStrategy:
 strat_dict = {"tit-for-tat": (lambda: type("Strategy", (Strategy, object),
                                            {"next_move": lambda my_moves, enemy_moves: Move.CO_OPERATE
                                            if len(enemy_moves) == 0 else enemy_moves[len(enemy_moves) - 1],
-                                            "name": "tit-for-tat"})),
+                                            "name": "tit-for-tat",
+                                            "is_random": False})),
               "always-defect": (lambda: type("Strategy", (Strategy, object),
                                              {"next_move": (lambda my_moves, enemy_moves: Move.DEFECT),
-                                              "name": "always-defect"})),
+                                              "name": "always-defect",
+                                              "is_random": False})),
               "always-cooperate": (lambda: type("Strategy", (Strategy, object),
                                                 {"next_move": (lambda my_moves, enemy_moves: Move.CO_OPERATE),
-                                                 "name": "always-cooperate"})),
+                                                 "name": "always-cooperate",
+                                                 "is_random": False})),
               "alternating": (lambda: type("Strategy", (Strategy, object),
                                            {"next_move":
                                             (lambda my_moves, enemy_moves: alternating(my_moves, enemy_moves)),
-                                           "name": "alternating"})),
+                                           "name": "alternating",
+                                            "is_random": False})),
               "grunger": (lambda: GrungerStrategy())}

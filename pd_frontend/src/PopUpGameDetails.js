@@ -14,9 +14,7 @@ class PopUpGameDetails extends Component {
             <div className={styles.modal}>
                 <div className={styles.modal_content2}>
                     <div><span className={styles.close} onClick={this.handleClick}>&times;</span></div>
-                    <div className={styles.list}>
                         <Game game={this.props.game}/>
-                    </div>
                 </div>
             </div>
         );

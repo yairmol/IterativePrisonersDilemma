@@ -26,7 +26,7 @@
   .modal_content2 {
     z-index: 300;
     background-color: #fefefe;
-    margin: 3% auto; /* 15% from the top and centered */
+    margin: 4% auto; /* 15% from the top and centered */
     padding: 40px 50px 5px 70px;
     border: 1px solid #888;
     width: 35%; /* Could be more or less, depending on screen size */

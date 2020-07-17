@@ -18,7 +18,11 @@ const useStyles = makeStyles((theme) => ({
     },
     gridList: {
         width: 500,
-        height: 450,
+        height: 500,
+    },
+    gridList2: {
+        width: 500,
+        height: 100,
     },
     tile: {
         height: 'max-content'
@@ -61,10 +65,12 @@ function Game(props) {
             <div className={styles.round}>{x[0]}{x[1]}</div>
         </GridListTile>));
     return (
-        <div className={classes.root}><GridList className={classes.gridList} cols={2}>
+        <div className={classes.root}><GridList className={classes.gridList2} cols={2}>
             <GridListTile className={styles.tile} cols={2}>
                 <div className={styles.titles}>{titles}</div>
             </GridListTile>
+        </GridList>
+            <GridList className={classes.gridList} cols={2}>
             {/*<div className={styles.match}>*/}{resRounds}{/*</div>*/}
         </GridList></div>);
 }
