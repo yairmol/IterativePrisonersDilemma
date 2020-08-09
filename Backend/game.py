@@ -112,7 +112,7 @@ def match_strategies(strategy1, strategy2, rounds):
             [result, game] = run_game(p1, p2, rounds)
             s1_avg_score = result[0] * (s1_quan - 1)
             s2_avg_score = 0
-            game['numOfGames'] = s1_quan * (s1_quan - 1)
+            game['numOfGames'] = (s1_quan * (s1_quan - 1))/2
     else:
         if strategy1['name'] != strategy2['name']:
             for i in range(s1_quan):
@@ -127,15 +127,15 @@ def match_strategies(strategy1, strategy2, rounds):
             game['numOfGames'] = s1_quan*s2_quan
         else:
             # need to fix this part (a strategy against itself and the strategy is random)
-            for i in range(s1_quan):
-                for j in range(s2_quan-1):
+            for i in range(0, s1_quan):  # for each player in this strategy
+                for j in range(i + 1, s2_quan):  # for every other player from the same strategy
                     p1 = find_strategy(strategy1['name'])
                     p2 = find_strategy(strategy1['name'])
                     [result, game] = run_game(p1, p2, rounds)
                     s1_avg_score += result[0] + result[1]
             s1_avg_score = s1_avg_score/s1_quan
-            s2_avg_score = s2_avg_score/s2_quan
-            game['numOfGames'] = s1_quan*s2_quan
+            s2_avg_score = 0
+            game['numOfGames'] = (s1_quan*(s1_quan - 1))/2
     return [s1_avg_score, s2_avg_score, game]
 
 

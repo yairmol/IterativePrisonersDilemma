@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3),
     },
     container: {
-        maxHeight: 200,
+        maxHeight: 400,
     },
 }));
 
@@ -29,7 +29,7 @@ export default function Games(props) {
         <React.Fragment>
             <Title>Recent Games</Title>
             <TableContainer className={classes.container}>
-            <Table size="small" stickyHeader>
+            <Table size="medium" stickyHeader>
                 <TableHead>
                     <TableRow>
                         <TableCell>Player 1</TableCell>
@@ -52,11 +52,6 @@ export default function Games(props) {
                 </TableBody>
             </Table>
             </TableContainer>
-            <div className={classes.seeMore}>
-                <Link color="primary" href="#" onClick={preventDefault}>
-                    See more Games
-                </Link>
-            </div>
         </React.Fragment>
     );
 }
