@@ -2,6 +2,7 @@ import React from 'react'
 import PopUpDet from './PopUpStratDetails';
 import {construct} from './getInfo'
 import {BarChart, Bar, Tooltip, XAxis, YAxis, ResponsiveContainer} from 'recharts';
+import Title from "./template/Title";
 
 const Component = React.Component;
 
@@ -21,6 +22,9 @@ class Chart extends Component {
     render() {
         return (
             <div>
+                <Title>
+                    Average total score of every strategy
+                </Title>
                 <ResponsiveContainer height={300} width="95%">
                 <BarChart
 

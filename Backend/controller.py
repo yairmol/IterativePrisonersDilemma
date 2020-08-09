@@ -19,11 +19,12 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/match', methods=['POST'])
 def make_match():
     data = request.json
+    print(data)
     # match = Match(data['strategies'])
     # match.run()
     # Match.last_match = match
 
-    return jsonify(match(data['strategies'], 20))
+    return jsonify(match(data['strategies'], data['rounds']))
 
 
 @app.route('/strategies')

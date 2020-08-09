@@ -1,12 +1,25 @@
 from move import Move
+import random
 
 
-# class Aviv:
-#     def __init__(self):
-#         self.toDefect = False
-#
-#     def next_move(self):
-#
+class Joss:
+    def __init__(self, prob):
+        self.prob_to_defect = prob
+        self.name = "Joss"
+        self.is_random = True
+
+    def next_move(self, my_moves, enemy_moves):
+        return Move.DEFECT if random.uniform(0, 1) <= self.prob_to_defect else tit_for_tat(my_moves, enemy_moves)
+
+
+class RandomStrategy:
+    def __init__(self, prob):
+        self.prob_to_coop = prob
+        self.name = "choose-randomly"
+        self.is_random = True
+
+    def next_move(self, my_moves, enemy_moves):
+        return Move.CO_OPERATE if random.uniform(0, 1) <= self.prob_to_coop else Move.DEFECT
 
 
 def find_strategy(strategy):
@@ -26,15 +39,19 @@ def alternating(my_moves, enemy_moves):
             return my_moves[len(my_moves) - 2]
 
 
+def tit_for_tat(my_moves, enemy_moves):
+    return Move.CO_OPERATE if len(enemy_moves) == 0 else enemy_moves[len(enemy_moves) - 1]
+
+
 class Strategy:
     def next_move(self):
         pass
 
 
-class GrungerStrategy:
+class GrudgerStrategy:
     def __init__(self):
         self.is_random = False
-        self.name = "grunger"
+        self.name = "grudger"
         self.toAvenge = False
 
     def next_move(self, my_moves, enemy_moves):
@@ -48,8 +65,7 @@ class GrungerStrategy:
 
 
 strat_dict = {"tit-for-tat": (lambda: type("Strategy", (Strategy, object),
-                                           {"next_move": lambda my_moves, enemy_moves: Move.CO_OPERATE
-                                           if len(enemy_moves) == 0 else enemy_moves[len(enemy_moves) - 1],
+                                           {"next_move": tit_for_tat,
                                             "name": "tit-for-tat",
                                             "is_random": False})),
               "always-defect": (lambda: type("Strategy", (Strategy, object),
@@ -65,4 +81,7 @@ strat_dict = {"tit-for-tat": (lambda: type("Strategy", (Strategy, object),
                                             (lambda my_moves, enemy_moves: alternating(my_moves, enemy_moves)),
                                            "name": "alternating",
                                             "is_random": False})),
-              "grunger": (lambda: GrungerStrategy())}
+              "grudger": (lambda: GrudgerStrategy()),
+              "choose-randomly": (lambda: RandomStrategy(0.5)),
+              "Joss": (lambda: Joss(0.25))
+              }

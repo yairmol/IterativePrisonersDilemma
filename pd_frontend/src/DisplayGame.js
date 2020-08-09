@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
     gridList2: {
         width: 500,
-        height: 100,
+        height: 80,
     },
     tile: {
         height: 'max-content'

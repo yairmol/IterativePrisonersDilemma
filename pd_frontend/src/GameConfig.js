@@ -62,6 +62,7 @@ export default function GameConfig(props) {
     const [selectedStrategies, setSelectedStrategies] = useState([{name: "", quantity: 0}]);
     const [strategies, setStrategies] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [rounds, setRounds] = useState("");
     const classes = useStyles();
     if (!isLoaded) {
         axios({
@@ -77,7 +78,8 @@ export default function GameConfig(props) {
 
     const onSubmit = () => {
         axios.post('http://localhost:8080/match',{
-            strategies: selectedStrategies
+            strategies: selectedStrategies,
+            rounds: rounds
         })
             .then(res => {
                 props.updateData(res.data);
@@ -133,6 +135,12 @@ export default function GameConfig(props) {
                             )
                         })
                     }
+                    <Grid item xs={12}>
+                        <TextField value={rounds} placeholder={"enter a number or random"}
+                                   onChange={(e) => setRounds(e.target.value)}
+                                   label={"rounds"}
+                                   className={classes.text}/>
+                    </Grid>
                     </Grid>
                     <Button
                         type="button"

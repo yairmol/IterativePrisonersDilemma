@@ -1,5 +1,6 @@
 from move import Move
 from strategies import find_strategy
+import random
 
 c_c_score = [3, 3]
 d_c_score = [5, 0]
@@ -18,11 +19,13 @@ def games_of(strategy):
 def merge_strategies(match):
     new_match = []
     for i in range(0, len(match)):
+        if int(match[i]['quantity']) <= 0:
+            continue
         is_exist = False
         for j in range(0, len(new_match)):
             if match[i]['name'] == new_match[j]['name']:
                 is_exist = True
-                new_match[j]['quantity'] += match[i]['quantity']
+                new_match[j]['quantity'] = int(new_match[j]['quantity']) + int(match[i]['quantity'])
         if not is_exist:
             new_match.append(match[i])
     return new_match
@@ -49,12 +52,10 @@ def calc_scores(p1_moves, p2_moves):
     return [p1_score, p2_score]
 
 
-def run_game(strategy1, strategy2, rounds):
+def run_game(p1, p2, rounds):
     """strategy1 and strategy2 are strings representing the names of the playing strategies
         the function returns an array of size two such that the first entry is player1 score
         and the second entry is player2 score"""
-    p1 = find_strategy(strategy1)
-    p2 = find_strategy(strategy2)
     p1_moves = []
     p2_moves = []
     for i in range(0, rounds):
@@ -64,8 +65,8 @@ def run_game(strategy1, strategy2, rounds):
         p2_moves.append(p2_next_move)
     scores = calc_scores(p1_moves, p2_moves)
     game = {
-        'player1name': strategy1,
-        'player2name': strategy2,
+        'player1name': p1.name,
+        'player2name': p2.name,
         'player1score': scores[0],
         'player2score': scores[1],
         'player1moves': list(map(lambda m: m.value, p1_moves)),
@@ -85,6 +86,59 @@ def parse_map_to_list(scores_map):
     return scores_list
 
 
+def match_strategies(strategy1, strategy2, rounds):
+    p1 = find_strategy(strategy1['name'])
+    p2 = find_strategy(strategy2['name'])
+    s1_quan = int(strategy1['quantity'])
+    s2_quan = int(strategy2['quantity'])
+    s1_avg_score = 0
+    s2_avg_score = 0
+    game = {}
+    if not p1.is_random and not p2.is_random:
+        if strategy1['name'] != strategy2['name']:
+            # there are s1_quan players of strategy1 each playing against s2_quan players
+            # we want the average total score of a player with strategy1
+            # result[0]*s2_quan will give us the total score of one player, and then
+            # result[0]*s2_quan*s1_quan will be the sum over all players of strategy1 and to get the average
+            # we divide by s1_quan
+            if s1_quan > 0 and s2_quan > 0:
+                [result, game] = run_game(p1, p2, rounds)
+                s1_avg_score = result[0] * s2_quan
+                s2_avg_score = result[1] * s1_quan
+                game['numOfGames'] = s1_quan * s2_quan
+        else:
+            # since the same strategy is playing against itself each player will play against all other players
+            # meaning that a player plays (s1_quan - 1) games
+            [result, game] = run_game(p1, p2, rounds)
+            s1_avg_score = result[0] * (s1_quan - 1)
+            s2_avg_score = 0
+            game['numOfGames'] = s1_quan * (s1_quan - 1)
+    else:
+        if strategy1['name'] != strategy2['name']:
+            for i in range(s1_quan):
+                for j in range(s2_quan):
+                    p1 = find_strategy(strategy1['name'])
+                    p2 = find_strategy(strategy2['name'])
+                    [result, game] = run_game(p1, p2, rounds)
+                    s1_avg_score += result[0]
+                    s2_avg_score += result[1]
+            s1_avg_score = s1_avg_score/s1_quan
+            s2_avg_score = s2_avg_score/s2_quan
+            game['numOfGames'] = s1_quan*s2_quan
+        else:
+            # need to fix this part (a strategy against itself and the strategy is random)
+            for i in range(s1_quan):
+                for j in range(s2_quan-1):
+                    p1 = find_strategy(strategy1['name'])
+                    p2 = find_strategy(strategy1['name'])
+                    [result, game] = run_game(p1, p2, rounds)
+                    s1_avg_score += result[0] + result[1]
+            s1_avg_score = s1_avg_score/s1_quan
+            s2_avg_score = s2_avg_score/s2_quan
+            game['numOfGames'] = s1_quan*s2_quan
+    return [s1_avg_score, s2_avg_score, game]
+
+
 def make_match(match, rounds):
     """match holds data from how much players are from each strategy"""
     match = merge_strategies(match)
@@ -92,28 +146,19 @@ def make_match(match, rounds):
     games = []
     for strategy in match:
         scores[strategy['name']] = 0
+    if rounds == "random":
+        rounds = random.randint(0, 200)
+    else:
+        rounds = int(rounds)
     for i in range(0, len(match)):
         for j in range(i, len(match)):
             strategy1 = match[i]
             strategy2 = match[j]
-            [result, game] = run_game(strategy1['name'], strategy2['name'], rounds)
-            s1_quan = int(strategy1['quantity'])
-            s2_quan = int(strategy2['quantity'])
-            if i != j:
-                # there are s1_quan players of strategy1 each playing against s2_quan players
-                # we want the average total score of a player with strategy1
-                # result[0]*s2_quan will give us the total score of one player, and then
-                # result[0]*s2_quan*s1_quan will be the sum over all players of strategy1 and to get the average
-                # we divide by s1_quan
-                scores[strategy1['name']] += result[0] * s2_quan
-                scores[strategy2['name']] += result[1] * s1_quan
-                game['numOfGames'] = s1_quan * s2_quan
-            else:
-                # since the same strategy is playing against itself each player will play against all other players
-                # meaning that a player players (s1_quan - 1) games
-                scores[strategy1['name']] += result[0] * (s1_quan - 1)
-                game['numOfGames'] = s1_quan * (s1_quan - 1)
-            games.append(game)
+            [s1_avg_score, s2_avg_score, game] = match_strategies(strategy1, strategy2, rounds)
+            scores[strategy1['name']] += s1_avg_score
+            scores[strategy2['name']] += s2_avg_score
+            if game['numOfGames'] > 0:
+                games.append(game)
     last_match['games'] = games
     return {
         'scores': parse_map_to_list(scores),
@@ -121,40 +166,7 @@ def make_match(match, rounds):
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# first version - not a very efficient one
 class Match:
     last_match = None
 

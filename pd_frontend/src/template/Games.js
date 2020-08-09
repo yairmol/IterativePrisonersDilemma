@@ -36,6 +36,7 @@ export default function Games(props) {
                         <TableCell>Player 2</TableCell>
                         <TableCell>Player 1 score</TableCell>
                         <TableCell>Player 2 score</TableCell>
+                        <TableCell>num of games</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -45,6 +46,7 @@ export default function Games(props) {
                             <TableCell>{row.player2name}</TableCell>
                             <TableCell>{row.player1score}</TableCell>
                             <TableCell>{row.player2score}</TableCell>
+                            <TableCell>{row.numOfGames}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
