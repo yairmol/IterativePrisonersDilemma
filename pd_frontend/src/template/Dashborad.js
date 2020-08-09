@@ -13,6 +13,19 @@ import Link from '@material-ui/core/Link';
 import Chart from '../Chart';
 import Games from './Games';
 import GameConfig from "../GameConfig";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from '@material-ui/icons/Menu';
+import Drawer from "@material-ui/core/Drawer";
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import Divider from "@material-ui/core/Divider";
+import List from "@material-ui/core/List";
+import Title from "./Title";
+import CreateStrategy from "../CreateStrategy";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import ListItemText from "@material-ui/core/ListItemText";
+import PeopleIcon from "@material-ui/icons/People";
 
 function Copyright() {
     return (
@@ -115,8 +128,17 @@ export default function Dashboard() {
     const classes = useStyles();
     const [matchMade, setMatchMade] = React.useState(false);
     const [games, setGames] = React.useState([]);
-    const [scores, setScores] = React.useState([])
+    const [scores, setScores] = React.useState([]);
     const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
+    const [open, setOpen] = React.useState(true);
+    const [selectedPage, setSelectedPage] = React.useState("Dashboard");
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
+    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
     const updateData = (data) => {
         alert("got results");
         setMatchMade(true);
@@ -127,17 +149,17 @@ export default function Dashboard() {
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <AppBar position="absolute" className={clsx(classes.appBar/*, open && classes.appBarShift*/)}>
+            <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
                 <Toolbar className={classes.toolbar}>
-                    {/*<IconButton*/}
-                    {/*    edge="start"*/}
-                    {/*    color="inherit"*/}
-                    {/*    aria-label="open drawer"*/}
-                    {/*    onClick={handleDrawerOpen}*/}
-                    {/*    className={clsx(classes.menuButton, open && classes.menuButtonHidden)}*/}
-                    {/*>*/}
-                    {/*    <MenuIcon />*/}
-                    {/*</IconButton>*/}
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                         Iterative Prisoners Dilemma
                     </Typography>
@@ -148,27 +170,40 @@ export default function Dashboard() {
                     {/*</IconButton>*/}
                 </Toolbar>
             </AppBar>
-            {/*<Drawer*/}
-            {/*    variant="permanent"*/}
-            {/*    classes={{*/}
-            {/*        paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),*/}
-            {/*    }}*/}
-            {/*    open={open}*/}
-            {/*>*/}
-            {/*    <div className={classes.toolbarIcon}>*/}
-            {/*        <IconButton onClick={handleDrawerClose}>*/}
-            {/*            <ChevronLeftIcon />*/}
-            {/*        </IconButton>*/}
-            {/*    </div>*/}
-            {/*    <Divider />*/}
-            {/*    <List>{mainListItems}</List>*/}
-            {/*    <Divider />*/}
-            {/*    <List>{secondaryListItems}</List>*/}
-            {/*</Drawer>*/}
-            <main className={classes.content}>
+            <Drawer
+                variant="permanent"
+                classes={{
+                    paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                }}
+                open={open}
+            >
+                <div className={classes.toolbarIcon}>
+                    <Title>menu</Title>
+                    <IconButton onClick={handleDrawerClose}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </div>
+                <Divider />
+                <List><div>
+                    <ListItem button onClick={() => setSelectedPage("Dashboard")}>
+                        <ListItemIcon>
+                            <DashboardIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Match Making" />
+                    </ListItem>
+                    <ListItem button onClick={() => setSelectedPage("CreateStrategy")}>
+                        <ListItemIcon>
+                            <PeopleIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Create Strategy" />
+                    </ListItem>
+                </div></List>
+            </Drawer>
+                <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="xl" className={classes.container}>
-                    <Grid container spacing={3}>
+                    {selectedPage === "Dashboard" ?
+                        (<Grid container spacing={3}>
                         {/* Chart */}
                         <Grid item xs={12} md={6} lg={7}>
                             <Paper className={fixedHeightPaper2}>
@@ -187,10 +222,7 @@ export default function Dashboard() {
                                 {matchMade ? <Chart scores={scores}/> : <Typography component="h1" variant="h6">Match wasn't made yet</Typography>}
                             </Paper>
                         </Grid>
-                    </Grid>
-                    <Box pt={4}>
-                        <Copyright />
-                    </Box>
+                    </Grid>) : <CreateStrategy/>}
                 </Container>
             </main>
         </div>
