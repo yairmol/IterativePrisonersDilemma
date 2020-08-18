@@ -130,7 +130,7 @@ export default function Dashboard() {
     const [games, setGames] = React.useState([]);
     const [scores, setScores] = React.useState([]);
     const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
     const [selectedPage, setSelectedPage] = React.useState("Dashboard");
     const handleDrawerOpen = () => {
         setOpen(true);

@@ -1,5 +1,88 @@
+import importlib
+
 from move import Move
 import random
+from typing import List
+from os import listdir
+
+new_strategies_file = 'strategy'
+strategies_folder = 'new_strategies'
+imports = "from typing import List\n" \
+          "from move import Move"
+
+
+def import_custom_strategies():
+    for file in listdir('./new_strategies'):
+        if file.find(new_strategies_file) == -1:
+            continue
+        strat_module = importlib.import_module(f"{strategies_folder}.{file[:file.find('.')]}")
+        strategy = strat_module.NewStrategy()
+        strat_dict[strategy.name] = strat_module.NewStrategy
+
+
+def get_last_strategy() -> int:
+    max_strategy = 0
+    for file in listdir('./new_strategies'):
+        if file.find(new_strategies_file) == -1:
+            continue
+        current_strategy_num = int(file[file.find('_') + 1:file.find('.')])
+        max_strategy = max(max_strategy, current_strategy_num)
+    return max_strategy
+
+
+def validate_code(code: str) -> bool:
+    class_name_ok = False
+    has_init = False
+    has_next_move = False
+    for row in code.split('\n'):
+        print(row)
+        if class_name_ok and has_next_move and has_init:
+            return True
+        if row.find("class") != -1 and row.find("NewStrategy") != -1:
+            class_name_ok = True
+            print("class ok")
+        if row.find('def') != -1 and row.find('__init__') != -1:
+            print("init ok")
+            has_init = True
+        if row.find('def') != -1 and row.find('next_move') != -1:
+            print("has next move ok")
+            has_next_move = True
+    return has_next_move and has_init and class_name_ok
+
+
+def add_name(code: str, name: str) -> str:
+    new_code = ""
+    for row in code.split('\n'):
+        new_code = new_code + "\n" + row
+        if row.find('def') != -1 and row.find('__init__') != -1:
+            spaces = ""
+            for c in row:
+                if c == ' ':
+                    spaces = spaces + ' '
+                else:
+                    break
+            spaces = spaces + '    '
+            new_code = new_code + "\n" + spaces + "self.name = \"" + name + "\""
+    return new_code
+
+
+def create_strategy(code: str, strategy_name: str):
+    if not validate_code(code):
+        raise Exception("invalid class creation")
+    code = add_name(code, strategy_name)
+    last_strategy = get_last_strategy() + 1
+    new_strategies_module_name = f"{strategies_folder}.{new_strategies_file}_{str(last_strategy)}"
+    new_strategies_file_path = f"{strategies_folder}/{new_strategies_file}_{str(last_strategy)}.py"
+    print(new_strategies_file_path)
+    with open(new_strategies_file_path, "w+") as strategies_file:
+        strategies_file.write(imports)
+        strategies_file.write(f"\n{code}")
+    try:
+        new_strategies_module = importlib.import_module(new_strategies_module_name)
+        new_strat = new_strategies_module.NewStrategy
+        strat_dict[strategy_name] = new_strat
+    except Exception as e:
+        raise Exception(f"could not create a new strategy. reason: {e}")
 
 
 class Joss:
@@ -78,10 +161,35 @@ strat_dict = {"tit-for-tat": (lambda: type("Strategy", (Strategy, object),
                                                  "is_random": False})),
               "alternating": (lambda: type("Strategy", (Strategy, object),
                                            {"next_move":
-                                            (lambda my_moves, enemy_moves: alternating(my_moves, enemy_moves)),
-                                           "name": "alternating",
+                                                (lambda my_moves, enemy_moves: alternating(my_moves, enemy_moves)),
+                                            "name": "alternating",
                                             "is_random": False})),
               "grudger": (lambda: GrudgerStrategy()),
               "choose-randomly": (lambda: RandomStrategy(0.5)),
               "Joss": (lambda: Joss(0.25))
               }
+
+
+# sample strategy:
+class insert_startegy_name:
+    # startegy initialization method. add variables as you wish (for example a number_of_turns variable)
+    def __init__(self):
+        # implement
+        # example:
+        self.number_of_turns = 0
+
+    # the strategy's main function.
+    # it calculates the next move, given the previous moves of herself and her opponent
+    # it can also use any variables declared in the init function
+    def next_move(self, my_moves: List[Move], enemy_moves: List[Move]) -> Move:
+        # Move is an Enum with two values:
+        #   Move.CO_OPERATE and Move.DEFECT
+        # this function must return one of this value
+        # the function params my_moves and enemy_moves are both lists
+        # composed of this enum.
+        # example:
+        self.number_of_turns += 1
+        if self.number_of_turns % 2 == 0:
+            return Move.CO_OPERATE
+        else:
+            return Move.DEFECT
