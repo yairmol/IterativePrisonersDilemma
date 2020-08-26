@@ -1,7 +1,6 @@
 from flask import Flask, request, abort
 from flask_jsonpify import jsonify
-from game import make_match as match
-from game import games_of as games_of2
+from game import EvolutionGame
 from flask_cors import CORS
 from strategies import strat_dict, create_strategy, import_custom_strategies as imp_cstm_strat
 import os
@@ -29,8 +28,11 @@ def make_match():
     # match = Match(data['strategies'])
     # match.run()
     # Match.last_match = match
-
-    return jsonify(match(data['strategies'], data['rounds']))
+    evo_game = EvolutionGame(data['strategies'], data['rounds'], data['iterations'])
+    iter_game_res = evo_game.run_iterated_game()
+    # print(iter_game_res)
+    # print(iter_game_res['scores'][0])
+    return jsonify(iter_game_res)
 
 
 @app.route('/strategies')
@@ -40,8 +42,8 @@ def get_strategies():
 
 @app.route('/gamesof/<strategy>')
 def games_of(strategy):
-    games = games_of2(strategy)
-    return jsonify(games)
+    # games = games_of2(strategy)
+    return jsonify("not impl")
 
 
 @app.route('/create_strategy', methods=['POST'])

@@ -62,7 +62,8 @@ export default function GameConfig(props) {
     const [selectedStrategies, setSelectedStrategies] = useState([{name: "", quantity: 0}]);
     const [strategies, setStrategies] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [rounds, setRounds] = useState("");
+    const [rounds, setRounds] = useState("20");
+    const [iterations, setIterations] = useState("1");
     const classes = useStyles();
     if (!isLoaded) {
         axios({
@@ -79,7 +80,8 @@ export default function GameConfig(props) {
     const onSubmit = () => {
         axios.post('http://localhost:8080/match',{
             strategies: selectedStrategies,
-            rounds: rounds
+            rounds: rounds,
+            iterations: iterations
         })
             .then(res => {
                 props.updateData(res.data);
@@ -121,26 +123,31 @@ export default function GameConfig(props) {
             <Title>Game Configurations</Title>
                 <form noValidate>
                     <Grid container spacing={3}>
-                    {
-                        selectedStrategies.map((st, i) => {
-                            return (
-                                <Grid item xs={12}>
-                                <StrategyConfig strategies={strategies}
-                                                onQuantityChange={(event => onQuantityChanged(event, i))}
-                                                onStrategyChange={(event) => onSelectionChanged(event, i)}
-                                                selectedStrategy={selectedStrategies[i]}
-                                                name={selectedStrategies[i].name}
-                                />
-                                </Grid>
-                            )
-                        })
-                    }
-                    <Grid item xs={12}>
-                        <TextField value={rounds} placeholder={"enter a number or random"}
-                                   onChange={(e) => setRounds(e.target.value)}
-                                   label={"rounds"}
-                                   className={classes.text}/>
-                    </Grid>
+                        {
+                            selectedStrategies.map((st, i) => {
+                                return (
+                                    <Grid item xs={6}>
+                                    <StrategyConfig strategies={strategies}
+                                                    onQuantityChange={(event => onQuantityChanged(event, i))}
+                                                    onStrategyChange={(event) => onSelectionChanged(event, i)}
+                                                    selectedStrategy={selectedStrategies[i]}
+                                                    name={selectedStrategies[i].name}
+                                    />
+                                    </Grid>
+                                )
+                            })
+                        }
+                        {selectedStrategies.length % 2 === 1 ? (<Grid xs={6}/>) : (<div/>)}
+                        <Grid item xs={6}>
+                            <TextField value={rounds} placeholder={"enter a number or random"}
+                                       onChange={(e) => setRounds(e.target.value)}
+                                       label={"rounds"}
+                                       className={classes.text}/>
+                            <TextField value={iterations} placeholder={"number of iterations"}
+                                       onChange={(e) => setIterations(e.target.value)}
+                                       label={"iterations"}
+                                       className={classes.text}/>
+                        </Grid>
                     </Grid>
                     <Button
                         type="button"

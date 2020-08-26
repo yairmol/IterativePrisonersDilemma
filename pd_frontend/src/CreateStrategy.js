@@ -3,7 +3,7 @@ import Title from "./template/Title";
 import AceEditor from 'react-ace';
 import "ace-builds/src-noconflict/mode-python"
 import "ace-builds/src-noconflict/snippets/python"
-import "ace-builds/src-noconflict/theme-xcode"
+import "ace-builds/src-noconflict/theme-tomorrow"
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -94,7 +94,7 @@ export default function CreateStrategy(){
                     <Grid item xs={12}>
                         <AceEditor
                             mode="python"
-                            theme="xcode"
+                            theme="tomorrow"
                             value={code}
                             onChange={(new_code) => setCode(new_code)}
                             width={1000}

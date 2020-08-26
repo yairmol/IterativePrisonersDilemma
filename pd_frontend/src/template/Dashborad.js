@@ -26,6 +26,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ListItemText from "@material-ui/core/ListItemText";
 import PeopleIcon from "@material-ui/icons/People";
+import IterationsChart from "../IterationsChart";
 
 function Copyright() {
     return (
@@ -120,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
         height: 240,
     },
     fixedHeight2: {
-        height: 400,
+        height: 300,
     },
 }));
 
@@ -144,6 +145,7 @@ export default function Dashboard() {
         setMatchMade(true);
         setGames(data.games);
         setScores(data.scores);
+        alert(JSON.stringify(scores))
     };
 
     return (
@@ -200,24 +202,23 @@ export default function Dashboard() {
             </Drawer>
                 <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
-                <Container maxWidth="xl" className={classes.container}>
+                <Container style={{float: "left"}} maxWidth="lg" className={classes.container}>
                     {selectedPage === "Dashboard" ?
                         (<Grid container spacing={3}>
-                        {/* Chart */}
-                        <Grid item xs={12} md={6} lg={7}>
+                        {/* Game Configurations */}
+                        <Grid item xs={12} md={12} lg={12}>
                             <Paper className={fixedHeightPaper2}>
                                 <GameConfig updateData={updateData}/>
                             </Paper>
                         </Grid>
-                        {/* Recent Deposits */}
-                        <Grid item xs={12} md={6} lg={5}>
-                            <Paper className={fixedHeightPaper2}>
-                                <Games games={games}/>
-                            </Paper>
-                        </Grid>
-                        {/* Recent Games */}
+                        {/*<Grid item xs={12} md={6} lg={5}>*/}
+                        {/*    <Paper className={fixedHeightPaper2}>*/}
+                        {/*        <Games games={games}/>*/}
+                        {/*    </Paper>*/}
+                        {/*</Grid>*/}
                         <Grid item xs={12}>
                             <Paper className={classes.paper}>
+                                {/*<IterationsChart />*/}
                                 {matchMade ? <Chart scores={scores}/> : <Typography component="h1" variant="h6">Match wasn't made yet</Typography>}
                             </Paper>
                         </Grid>
