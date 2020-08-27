@@ -30,7 +30,10 @@ class EvolutionGame:
             scores, games = self.make_match()
             iter_scores.append(self.parse_map_to_list(scores))
             iter_games.append(games)
-            iter_quantities.append([{strategy['name']: strategy['quantity']} for strategy in self.strategies])
+            quantities = dict()
+            for strategy in self.strategies:
+                quantities[strategy['name']] = strategy['quantity']
+            iter_quantities.append(quantities)
             self.calc_new_quantities(scores)
         self.history = {
             "scores": iter_scores,
