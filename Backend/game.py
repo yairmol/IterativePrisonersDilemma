@@ -49,7 +49,7 @@ class EvolutionGame:
             total_players += strategy['quantity']
             total_score += scores[strategy['name']]
         for strategy in self.strategies:
-            strategy['quantity'] = (scores[strategy['name']] * total_players) / total_score
+            strategy['quantity'] = int(round((scores[strategy['name']] * total_players) / total_score))
 
     def make_match(self) -> [Dict[str, float], list]:
         """match holds data from how much players are from each strategy"""
@@ -127,9 +127,9 @@ class EvolutionGame:
         return [s1_avg_score, s2_avg_score, game]
 
     @staticmethod
-    def games_of(self, strategy, iteration):
+    def games_of(strategy: str, iteration: int):
         games_of_s = []
-        for game in EvolutionGame.last_evo_game['games']:
+        for game in EvolutionGame.last_evo_game.history['games'][iteration]:
             if game['player1name'] == strategy or game['player2name'] == strategy:
                 games_of_s.append(game)
         return games_of_s

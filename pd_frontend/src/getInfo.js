@@ -215,10 +215,10 @@ const getGame = (i) =>
     games[i];
 
 const axios = require("axios").default;
-const getStratGames = (stratName) =>
+const getStratGames = (stratName, iteration) =>
     axios({
         method: 'get',
-        url: "http://localhost:8080/gamesof/"+stratName,
+        url: "http://localhost:8080/gamesof/"+stratName+"/"+iteration,
     })
         .then((response) => {
             return response.data;

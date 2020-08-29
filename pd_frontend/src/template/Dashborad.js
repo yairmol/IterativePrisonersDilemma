@@ -27,6 +27,7 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import ListItemText from "@material-ui/core/ListItemText";
 import PeopleIcon from "@material-ui/icons/People";
 import IterationsChart from "../IterationsChart";
+import Button from "@material-ui/core/Button";
 
 function Copyright() {
     return (
@@ -130,9 +131,11 @@ export default function Dashboard() {
     const [matchMade, setMatchMade] = React.useState(false);
     const [games, setGames] = React.useState([]);
     const [scores, setScores] = React.useState([]);
+    const [quantities, setQuantities] = React.useState([]);
     const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
     const [open, setOpen] = React.useState(false);
     const [selectedPage, setSelectedPage] = React.useState("Dashboard");
+    const [selected_iteration, setSelectedIteration] = React.useState(0);
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -145,7 +148,8 @@ export default function Dashboard() {
         setMatchMade(true);
         setGames(data.games);
         setScores(data.scores);
-        alert(JSON.stringify(scores))
+        setQuantities(data.quantities);
+        // alert(JSON.stringify(scores))
     };
 
     return (
@@ -207,21 +211,38 @@ export default function Dashboard() {
                         (<Grid container spacing={3}>
                         {/* Game Configurations */}
                         <Grid item xs={12} md={12} lg={12}>
-                            <Paper className={fixedHeightPaper2}>
-                                <GameConfig updateData={updateData}/>
-                            </Paper>
+                            {!matchMade ?
+                                (<Paper className={fixedHeightPaper2}><GameConfig updateData={updateData}/></Paper>) :
+                                (<Paper className={classes.paper}>
+                                    <Button onClick={() => setMatchMade(false)}>Clear results</Button>
+                                    <IterationsChart quantities={quantities} setIter={setSelectedIteration}/>
+                                </Paper>)
+                            }
                         </Grid>
                         {/*<Grid item xs={12} md={6} lg={5}>*/}
                         {/*    <Paper className={fixedHeightPaper2}>*/}
                         {/*        <Games games={games}/>*/}
                         {/*    </Paper>*/}
                         {/*</Grid>*/}
-                        <Grid item xs={12}>
-                            <Paper className={classes.paper}>
-                                {/*<IterationsChart />*/}
-                                {matchMade ? <Chart scores={scores}/> : <Typography component="h1" variant="h6">Match wasn't made yet</Typography>}
-                            </Paper>
-                        </Grid>
+                            {matchMade ?
+                                (<Grid item xs={8} md={8} lg={8}>
+                                    <Paper className={classes.paper}>
+                                        <Chart iteration={selected_iteration} scores={scores[selected_iteration]}/>
+                                    </Paper>
+                                </Grid>) : null
+                            }
+                            {matchMade ?
+                                (<Grid item xs={4} md={4} lg={4}>
+                                    <Paper className={classes.paper}>
+                                        Insert PieChart here
+                                    </Paper>
+                                </Grid>) :
+                                <Grid item xs={12}>
+                                    <Paper className={classes.paper}>
+                                        <Typography component="h1" variant="h6">Match wasn't made yet</Typography>
+                                    </Paper>
+                                </Grid>
+                            }
                     </Grid>) : <CreateStrategy/>}
                 </Container>
             </main>

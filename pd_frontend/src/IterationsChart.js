@@ -10,6 +10,9 @@ function createData(time, amount) {
     return { time, amount };
 }
 
+const colors = ["#ed553b", "#f6d55c", "#3caea3", "#20639b",
+    "#7268a6", "#32a852"];
+
 const data = [
     {
         name: "iteration 1",
@@ -151,23 +154,34 @@ const data = [
 //     ];
 
 
-export default function IterationsChart() {
+export default function IterationsChart(props) {
     const theme = useTheme();
+    const getStrategies = () => {
+        let strats = [];
+        for (let strat in props.quantities[0]){
+            strats = strats.concat([strat]);
+        }
+        return strats
+    };
 
     return (
         <React.Fragment>
             <Title>Today</Title>
-            <ResponsiveContainer height={300} width="95%">
-                <LineChart width={730} height={250} data={data}
-                           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <ResponsiveContainer height={350} width="95%">
+                <LineChart onClick={(e) => e != null ? props.setIter(e.activeLabel) : null} data={props.quantities}
+                           margin={{ top: 5, right: 30, left: 20, bottom: 100 }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
+                    <XAxis />
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="tit_for_tat" stroke="#8884d8" />
-                    <Line type="monotone" dataKey="yair" stroke="#82ca9d" />
-                    <Line type="monotone" dataKey="grudger" stroke="#82ca22" />
+                    {
+                        getStrategies().map((val, i) =>
+                            (<Line type="monotone" dataKey={val} stroke={colors[i % colors.length]} />))
+                    }
+                    {/*<Line type="monotone" dataKey="tit_for_tat" stroke="#8884d8" />*/}
+                    {/*<Line type="monotone" dataKey="yair" stroke="#82ca9d" />*/}
+                    {/*<Line type="monotone" dataKey="grudger" stroke="#82ca22" />*/}
                 </LineChart>
             </ResponsiveContainer>
         </React.Fragment>

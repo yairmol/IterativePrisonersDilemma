@@ -47,7 +47,9 @@ class Chart extends Component {
                 </BarChart
 >
                 </ResponsiveContainer>
-                {this.state.showStratDetails ? <PopUpDet score={this.score} label={this.label} toggle={this.closeWindow}/> : null}
+                {this.state.showStratDetails ? <PopUpDet score={this.score} label={this.label}
+                                                         iteration={this.props.iteration}
+                                                         toggle={this.closeWindow}/> : null}
                 {/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
             </div>
         );

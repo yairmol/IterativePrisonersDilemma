@@ -30,6 +30,7 @@ def make_match():
     # Match.last_match = match
     evo_game = EvolutionGame(data['strategies'], data['rounds'], data['iterations'])
     iter_game_res = evo_game.run_iterated_game()
+    EvolutionGame.last_evo_game = evo_game
     # print(iter_game_res)
     # print(iter_game_res['scores'][0])
     return jsonify(iter_game_res)
@@ -40,10 +41,10 @@ def get_strategies():
     return jsonify({"message": list(strat_dict.keys())})
 
 
-@app.route('/gamesof/<strategy>')
-def games_of(strategy):
-    # games = games_of2(strategy)
-    return jsonify("not impl")
+@app.route('/gamesof/<strategy>/<iteration>')
+def games_of(strategy: str, iteration: str):
+    games = EvolutionGame.games_of(strategy, int(iteration))
+    return jsonify(games)
 
 
 @app.route('/create_strategy', methods=['POST'])
