@@ -111,7 +111,7 @@ export default class Res extends PureComponent {
                     label
                     >
                     	{
-                    	data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
+                    	data.map((entry, index) => <Cell fill={this.props.colors[entry.name]}/>)
                     }
                     </Pie>
                     <Tooltip/>

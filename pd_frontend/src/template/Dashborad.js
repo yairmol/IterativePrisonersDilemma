@@ -127,6 +127,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const colors = ["#ed553b", "#f6d55c", "#3caea3", "#20639b",
+    "#7268a6", "#32a852"];
+
 export default function Dashboard() {
     const classes = useStyles();
     const [matchMade, setMatchMade] = React.useState(false);
@@ -137,6 +140,7 @@ export default function Dashboard() {
     const [open, setOpen] = React.useState(false);
     const [selectedPage, setSelectedPage] = React.useState("Dashboard");
     const [selected_iteration, setSelectedIteration] = React.useState(0);
+    const [colorMap, setColorMap] = React.useState({});
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -151,6 +155,24 @@ export default function Dashboard() {
         setQuantities(data.quantities);
         // alert(JSON.stringify(scores));
         setMatchMade(true);
+        let strats = [];
+        for (let strat in data.quantities[0]){
+            strats = strats.concat([strat]);
+        }
+        let colorMapping = {};
+        let i = 0;
+        for (const i in strats) {
+            colorMapping[strats[i]] = colors[i%colors.length];
+        }
+        setColorMap(colorMapping);
+    };
+
+    const getStrategies = () => {
+        let strats = [];
+        for (let strat in quantities[0]){
+            strats = strats.concat([strat]);
+        }
+        return strats
     };
 
     return (
@@ -215,8 +237,12 @@ export default function Dashboard() {
                             {!matchMade ?
                                 (<Paper className={fixedHeightPaper2}><GameConfig updateData={updateData}/></Paper>) :
                                 (<Paper className={classes.paper}>
-                                    <Button onClick={() => setMatchMade(false)}>Clear results</Button>
-                                    <IterationsChart quantities={quantities} setIter={setSelectedIteration}/>
+                                    <IterationsChart colors={colorMap} quantities={quantities} setIter={setSelectedIteration}/>
+                                    <Button onClick={() => setMatchMade(false)}
+                                            type="button"
+                                            color="primary"
+                                            className={classes.button}
+                                            variant="outlined">Clear results</Button>
                                 </Paper>)
                             }
                         </Grid>
@@ -228,14 +254,14 @@ export default function Dashboard() {
                             {matchMade ?
                                 (<Grid item xs={6} md={8} lg={8}>
                                     <Paper className={classes.paper}>
-                                        <Chart iteration={selected_iteration} scores={scores[selected_iteration]}/>
+                                        <Chart colors={colorMap}  iteration={selected_iteration} scores={scores[selected_iteration]}/>
                                     </Paper>
                                 </Grid>) : null
                             }
                             {matchMade ?
                                 (<Grid item xs={6} md={4} lg={4}>
                                     <Paper className={classes.paper}>
-                                        <PieChartModule iteration={selected_iteration} scores={quantities[selected_iteration]}/>
+                                        <PieChartModule colors={colorMap} iteration={selected_iteration} scores={quantities[selected_iteration]}/>
                                     </Paper>
                                 </Grid>) :
                                 <Grid item xs={12}>

@@ -177,7 +177,7 @@ export default function IterationsChart(props) {
                     <Legend />
                     {
                         getStrategies().map((val, i) =>
-                            (<Line type="monotone" dataKey={val} stroke={colors[i % colors.length]} />))
+                            (<Line type="monotone" dataKey={val} stroke={props.colors[val]} />))
                     }
                     {/*<Line type="monotone" dataKey="tit_for_tat" stroke="#8884d8" />*/}
                     {/*<Line type="monotone" dataKey="yair" stroke="#82ca9d" />*/}

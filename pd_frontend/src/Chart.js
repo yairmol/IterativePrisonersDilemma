@@ -46,7 +46,7 @@ class Chart extends Component {
                     <YAxis/>
                     <Tooltip/>
                     <Bar dataKey="score" fill="#82ca9d">
-                        {this.props.scores.map((entry, index) => <Cell fill={colors[index%colors.length]}/>)}
+                        {this.props.scores.map((entry, index) => <Cell fill={this.props.colors[entry.name]}/>)}
                     </Bar>
                 </BarChart>
                 </ResponsiveContainer>
