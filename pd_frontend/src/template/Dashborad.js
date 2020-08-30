@@ -28,6 +28,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import PeopleIcon from "@material-ui/icons/People";
 import IterationsChart from "../IterationsChart";
 import Button from "@material-ui/core/Button";
+import PieChartModule from "../evoResChart"
 
 function Copyright() {
     return (
@@ -144,12 +145,12 @@ export default function Dashboard() {
     };
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
     const updateData = (data) => {
-        alert("got results");
-        setMatchMade(true);
+        // alert("got results");
         setGames(data.games);
         setScores(data.scores);
         setQuantities(data.quantities);
-        // alert(JSON.stringify(scores))
+        // alert(JSON.stringify(scores));
+        setMatchMade(true);
     };
 
     return (
@@ -225,16 +226,16 @@ export default function Dashboard() {
                         {/*    </Paper>*/}
                         {/*</Grid>*/}
                             {matchMade ?
-                                (<Grid item xs={8} md={8} lg={8}>
+                                (<Grid item xs={6} md={8} lg={8}>
                                     <Paper className={classes.paper}>
                                         <Chart iteration={selected_iteration} scores={scores[selected_iteration]}/>
                                     </Paper>
                                 </Grid>) : null
                             }
                             {matchMade ?
-                                (<Grid item xs={4} md={4} lg={4}>
+                                (<Grid item xs={6} md={4} lg={4}>
                                     <Paper className={classes.paper}>
-                                        Insert PieChart here
+                                        <PieChartModule iteration={selected_iteration} scores={quantities[selected_iteration]}/>
                                     </Paper>
                                 </Grid>) :
                                 <Grid item xs={12}>
