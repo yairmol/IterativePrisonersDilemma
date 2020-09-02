@@ -76,7 +76,7 @@ class PopUpStratDetails extends Component {
 
     render() {
         if (!this.state.isLoaded) {
-            getStratGames(this.props.label)
+            getStratGames(this.props.label, this.props.iteration)
                 .then(games => {
                     this.setState({
                         games: games,

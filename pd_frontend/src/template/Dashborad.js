@@ -27,6 +27,8 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import ListItemText from "@material-ui/core/ListItemText";
 import PeopleIcon from "@material-ui/icons/People";
 import IterationsChart from "../IterationsChart";
+import Button from "@material-ui/core/Button";
+import PieChartModule from "../evoResChart"
 
 function Copyright() {
     return (
@@ -125,14 +127,20 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const colors = ["#ed553b", "#f6d55c", "#3caea3", "#20639b",
+    "#7268a6", "#32a852"];
+
 export default function Dashboard() {
     const classes = useStyles();
     const [matchMade, setMatchMade] = React.useState(false);
     const [games, setGames] = React.useState([]);
     const [scores, setScores] = React.useState([]);
+    const [quantities, setQuantities] = React.useState([]);
     const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
     const [open, setOpen] = React.useState(false);
     const [selectedPage, setSelectedPage] = React.useState("Dashboard");
+    const [selected_iteration, setSelectedIteration] = React.useState(0);
+    const [colorMap, setColorMap] = React.useState({});
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -141,11 +149,30 @@ export default function Dashboard() {
     };
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
     const updateData = (data) => {
-        alert("got results");
-        setMatchMade(true);
+        // alert("got results");
         setGames(data.games);
         setScores(data.scores);
-        alert(JSON.stringify(scores))
+        setQuantities(data.quantities);
+        // alert(JSON.stringify(scores));
+        setMatchMade(true);
+        let strats = [];
+        for (let strat in data.quantities[0]){
+            strats = strats.concat([strat]);
+        }
+        let colorMapping = {};
+        let i = 0;
+        for (const i in strats) {
+            colorMapping[strats[i]] = colors[i%colors.length];
+        }
+        setColorMap(colorMapping);
+    };
+
+    const getStrategies = () => {
+        let strats = [];
+        for (let strat in quantities[0]){
+            strats = strats.concat([strat]);
+        }
+        return strats
     };
 
     return (
@@ -207,21 +234,42 @@ export default function Dashboard() {
                         (<Grid container spacing={3}>
                         {/* Game Configurations */}
                         <Grid item xs={12} md={12} lg={12}>
-                            <Paper className={fixedHeightPaper2}>
-                                <GameConfig updateData={updateData}/>
-                            </Paper>
+                            {!matchMade ?
+                                (<Paper className={fixedHeightPaper2}><GameConfig updateData={updateData}/></Paper>) :
+                                (<Paper className={classes.paper}>
+                                    <IterationsChart colors={colorMap} quantities={quantities} setIter={setSelectedIteration}/>
+                                    <Button onClick={() => setMatchMade(false)}
+                                            type="button"
+                                            color="primary"
+                                            className={classes.button}
+                                            variant="outlined">Clear results</Button>
+                                </Paper>)
+                            }
                         </Grid>
                         {/*<Grid item xs={12} md={6} lg={5}>*/}
                         {/*    <Paper className={fixedHeightPaper2}>*/}
                         {/*        <Games games={games}/>*/}
                         {/*    </Paper>*/}
                         {/*</Grid>*/}
-                        <Grid item xs={12}>
-                            <Paper className={classes.paper}>
-                                {/*<IterationsChart />*/}
-                                {matchMade ? <Chart scores={scores}/> : <Typography component="h1" variant="h6">Match wasn't made yet</Typography>}
-                            </Paper>
-                        </Grid>
+                            {matchMade ?
+                                (<Grid item xs={6} md={8} lg={8}>
+                                    <Paper className={classes.paper}>
+                                        <Chart colors={colorMap}  iteration={selected_iteration} scores={scores[selected_iteration]}/>
+                                    </Paper>
+                                </Grid>) : null
+                            }
+                            {matchMade ?
+                                (<Grid item xs={6} md={4} lg={4}>
+                                    <Paper className={classes.paper}>
+                                        <PieChartModule colors={colorMap} iteration={selected_iteration} scores={quantities[selected_iteration]}/>
+                                    </Paper>
+                                </Grid>) :
+                                <Grid item xs={12}>
+                                    <Paper className={classes.paper}>
+                                        <Typography component="h1" variant="h6">Match wasn't made yet</Typography>
+                                    </Paper>
+                                </Grid>
+                            }
                     </Grid>) : <CreateStrategy/>}
                 </Container>
             </main>
